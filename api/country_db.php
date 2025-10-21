@@ -99,6 +99,29 @@ function addCountry()
     global $app;
     $request = $app->request();
     $country = json_decode($request->getBody());
+
+    if (!$country)
+    {
+        echo json_encode([
+            "success" => false,
+            "message" => "Invalid JSON format."
+        ]);
+        return;
+    }
+
+    $requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
+    foreach ($requiredFields as $field)
+    {
+        if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null)
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => "Missing or empty field: '$field'. All fields are required."
+            ]);
+            return;
+        }
+    }
+
     $name = $country->name;
     $capital = $country->capital;
     $region = $country->region;
@@ -163,6 +186,7 @@ function updateCountry($id)
     global $app;
     $request = $app->request();
     $country = json_decode($request->getBody());
+
     $name = $country->name;
     $capital = $country->capital;
     $region = $country->region;
@@ -173,9 +197,11 @@ function updateCountry($id)
     $gdp = $country->gdp;
     $description = $country->description;
     $flag_url = $country->flag_url;
+
     $query = "UPDATE countries SET name='$name', capital='$capital', region='$region', 
             population ='$population', area='$area', language='$language', currency='$currency', 
             gdp='$gdp', description='$description', flag_url='$flag_url' WHERE id='$id'";
+    
     try
     {
         global $db;
