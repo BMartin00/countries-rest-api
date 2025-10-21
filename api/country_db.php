@@ -18,11 +18,15 @@ function getCountries()
 		$countries = $db->query($query);
 		$countries = $countries->fetchAll(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
-		echo '{"countries":' . json_encode($countries) . '}';
+		echo json_encode([
+			"success" => true,
+			"message" => "Countries retrieved successfully.",
+			"countries" => $countries
+		]);
 	}
 	catch (PDOException $e)
 	{
-		echo '{"error":{"text":' . $e->getMessage() . '}}';
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
 	}
 }
 
@@ -36,11 +40,25 @@ function getCountry($id)
 		$countries = $db->query($query);
 		$countries = $countries->fetch(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
-		echo json_encode($countries);
+		if ($countries)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Country retrieved successfully.",
+				"country" => $countries
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No country found with ID $id."
+			]);
+		}
 	}
 	catch (PDOException $e)
 	{
-		echo '{"error":{"text":' . $e->getMessage() . '}}';
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
 	}
 }
 
@@ -54,11 +72,25 @@ function findByName($name)
 		$countries = $db->query($query);
 		$countries = $countries->fetch(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
-		echo json_encode($countries);
+		if ($countries)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Country search successful.",
+				"countries" => $countries
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No countries found matching '$name'."
+			]);
+		}
 	}
 	catch (PDOException $e)
 	{
-		echo '{"error":{"text":' . $e->getMessage() . '}}';
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
 	}
 }
 
@@ -86,11 +118,15 @@ function addCountry()
         global $db;
         $db->exec($query);
         $country->id = $db->lastInsertId();
-        echo json_encode($country);
+        echo json_encode([
+			"success" => true,
+			"message" => "Country added successfully.",
+			"country" => $country
+		]);
     }
     catch (PDOException $e)
     {
-        echo '{"error":{"text":' . $e->getMessage() . '}}';
+        echo json_encode(["error" => ["text" => $e->getMessage()]]);
     }
 }
 
@@ -100,11 +136,25 @@ function deleteCountry($id)
     try
     {
         global $db;
-        $db->exec($query);
+        $rowsAffected = $db->exec($query);
+        if ($rowsAffected > 0)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Country deleted successfully."
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No country found with ID $id."
+			]);
+		}
     }
     catch (PDOException $e)
     {
-        echo '{"error":{"text":' . $e->getMessage() . '}}';
+        echo json_encode(["error" => ["text" => $e->getMessage()]]);
     }
 }
 
@@ -129,8 +179,22 @@ function updateCountry($id)
     try
     {
         global $db;
-        $db->exec($query);
-        echo json_encode($country);
+        $rowsAffected = $db->exec($query);
+		if ($rowsAffected > 0)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Country updated successfully.",
+				"country" => $country
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No country found with ID $id or no changes made."
+			]);
+		}
     }
     catch (PDOException $e)
     {
