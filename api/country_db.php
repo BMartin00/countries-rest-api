@@ -122,6 +122,19 @@ function addCountry()
         }
     }
 
+    $numericFields = ['population', 'area', 'gdp'];
+    foreach ($numericFields as $field)
+    {
+        if (!is_numeric($country->$field))
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => ucfirst($field) . " must be a number."
+            ]);
+            return;
+        }
+    }
+
     $name = $country->name;
     $capital = $country->capital;
     $region = $country->region;
@@ -186,6 +199,19 @@ function updateCountry($id)
     global $app;
     $request = $app->request();
     $country = json_decode($request->getBody());
+
+    $numericFields = ['population', 'area', 'gdp'];
+    foreach ($numericFields as $field)
+    {
+        if (!is_numeric($country->$field))
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => ucfirst($field) . " must be a number."
+            ]);
+            return;
+        }
+    }
 
     $name = $country->name;
     $capital = $country->capital;
