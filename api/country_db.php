@@ -200,6 +200,28 @@ function updateCountry($id)
     $request = $app->request();
     $country = json_decode($request->getBody());
 
+    if (!$country)
+    {
+        echo json_encode([
+            "success" => false,
+            "message" => "Invalid JSON format."
+        ]);
+        return;
+    }
+    
+    $requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
+    foreach ($requiredFields as $field)
+    {
+        if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null)
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => "Missing or empty field: '$field'. All fields are required."
+            ]);
+            return;
+        }
+    }
+
     $numericFields = ['population', 'area', 'gdp'];
     foreach ($numericFields as $field)
     {
