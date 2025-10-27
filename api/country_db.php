@@ -198,7 +198,7 @@ function getCountriesByLanguage($language)
         {
 			echo json_encode([
 				"success" => false,
-				"message" => "No Language found matching '$language'."
+				"message" => "No language found matching '$language'."
 			]);
 		}
 	}
