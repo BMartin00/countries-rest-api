@@ -1,7 +1,11 @@
 CREATE DATABASE IF NOT EXISTS world_data;
 USE world_data;
 
+-- Drop existing tables if needed
 DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS users;
+
+-- Countries table
 CREATE TABLE countries (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
@@ -16,6 +20,16 @@ CREATE TABLE countries (
   flag_url VARCHAR(255)
 );
 
+-- Users table
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  image VARCHAR(255)
+);
+
+-- Insert sample countries
 INSERT INTO countries (name, capital, region, population, area, language, currency, gdp, description, flag_url) VALUES
 ('Japan', 'Tokyo', 'Asia', 125000000, 377975, 'Japanese', 'Yen', 5065000000000,
  'Japan is an island nation in East Asia known for its culture, advanced technology, and cuisine.',
@@ -48,5 +62,10 @@ INSERT INTO countries (name, capital, region, population, area, language, curren
  'Egypt is home to one of the world’s oldest civilizations and landmarks like the Pyramids of Giza.',
  'https://flagcdn.com/eg.svg');
 
+-- Insert sample users
+INSERT INTO users (name, username, password, image) VALUES
+('John Doe', 'johndoe', 'password123', 'https://example.com/images/john.png'),
+('Jane Smith', 'janesmith', 'securepass', 'https://example.com/images/jane.png');
 
 SELECT * FROM countries;
+SELECT * FROM users;
