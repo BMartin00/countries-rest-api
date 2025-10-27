@@ -94,6 +94,102 @@ function findByName($name)
 	}
 }
 
+function getCountriesByRegion($region)
+{
+	$query = "SELECT * FROM countries WHERE UPPER(region) LIKE " . '"%' . $region . '%"' . " ORDER BY region";
+
+	try
+	{
+		global $db;
+		$countries = $db->query($query);
+		$countries = $countries->fetchAll(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		if ($countries)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Region search successful.",
+				"countries" => $countries
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No region found matching '$region'."
+			]);
+		}
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
+function getCountriesByCapital($capital)
+{
+	$query = "SELECT * FROM countries WHERE UPPER(capital) LIKE " . '"%' . $capital . '%"' . " ORDER BY capital";
+
+	try
+	{
+		global $db;
+		$countries = $db->query($query);
+		$countries = $countries->fetch(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		if ($countries)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Capital search successful.",
+				"countries" => $countries
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No capital found matching '$capital'."
+			]);
+		}
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
+function getCountriesByLanguage($language)
+{
+	$query = "SELECT * FROM countries WHERE UPPER(language) LIKE " . '"%' . $language . '%"' . " ORDER BY language";
+
+	try
+	{
+		global $db;
+		$countries = $db->query($query);
+		$countries = $countries->fetchAll(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		if ($countries)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "Language search successful.",
+				"countries" => $countries
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No Language found matching '$language'."
+			]);
+		}
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
 function addCountry()
 {
     global $app;
