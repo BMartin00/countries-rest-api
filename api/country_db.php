@@ -96,7 +96,16 @@ function findByName($name)
 
 function getCountriesByRegion($region)
 {
-	$query = "SELECT * FROM countries WHERE UPPER(region) LIKE " . '"%' . $region . '%"' . " ORDER BY region";
+    if (isset($_GET['sort']))
+	{
+		$col = $_GET['sort'];
+	}
+	else
+	{
+		$col = "name";
+	}
+
+	$query = "SELECT * FROM countries WHERE UPPER(region) LIKE " . '"%' . $region . '%"' . " ORDER BY $col";
 
 	try
 	{
@@ -160,7 +169,16 @@ function getCountriesByCapital($capital)
 
 function getCountriesByLanguage($language)
 {
-	$query = "SELECT * FROM countries WHERE UPPER(language) LIKE " . '"%' . $language . '%"' . " ORDER BY language";
+    if (isset($_GET['sort']))
+	{
+		$col = $_GET['sort'];
+	}
+	else
+	{
+		$col = "name";
+	}
+    
+	$query = "SELECT * FROM countries WHERE UPPER(language) LIKE " . '"%' . $language . '%"' . " ORDER BY $col";
 
 	try
 	{
