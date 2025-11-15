@@ -16,5 +16,12 @@ $app->post('/countries', 'addCountry');
 $app->delete('/countries/:id', 'deleteCountry');
 $app->put('/countries/:id', 'updateCountry');
 
+$app->get('/users', 'getUsers');
+$app->get('/users/:id',  'getUser');
+$app->get('/users/search/:query', 'searchByName');
+$app->post('/users', 'addUser');
+$app->delete('/users/:id', 'deleteUser');
+$app->put('/users/:id', 'updateUser');
+
 $app->run();
 ?>

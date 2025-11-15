@@ -389,4 +389,246 @@ function updateCountry($id)
         echo '{"error":{"text":' . $e->getMessage() . '}}';
     }
 }
+
+
+
+
+function getUsers()
+{
+	if (isset($_GET['sort']))
+	{
+		$col = $_GET['sort'];
+	}
+	else
+	{
+		$col = "name";
+	}
+
+	$query = "SELECT * FROM users ORDER BY "."$col";
+
+	try
+	{
+		global $db;
+		$users = $db->query($query);
+		$users = $users->fetchAll(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		echo json_encode([
+			"success" => true,
+			"message" => "Users retrieved successfully.",
+			"users" => $users
+		]);
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
+function getUser($id)
+{
+	$query = "SELECT * FROM users WHERE id = '$id'";
+
+	try
+	{
+		global $db;
+		$users = $db->query($query);
+		$users = $users->fetch(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		if ($users)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "User retrieved successfully.",
+				"country" => $users
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No user found with ID $id."
+			]);
+		}
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
+function searchByName($name)
+{
+	$query = "SELECT * FROM users WHERE UPPER(name) LIKE " . '"%' . $name . '%"' . " ORDER BY name";
+
+	try
+	{
+		global $db;
+		$users = $db->query($query);
+		$users = $users->fetch(PDO::FETCH_ASSOC);
+		header("Content-Type: application/json", true);
+		if ($users)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "User search successful.",
+				"users" => $users
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No users found matching '$name'."
+			]);
+		}
+	}
+	catch (PDOException $e)
+	{
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
+}
+
+function addUser()
+{
+    global $app;
+    $request = $app->request();
+    $user = json_decode($request->getBody());
+
+    if (!$user)
+    {
+        echo json_encode([
+            "success" => false,
+            "message" => "Invalid JSON format."
+        ]);
+        return;
+    }
+
+    $requiredFields = ['name', 'username', 'password', 'image'];
+    foreach ($requiredFields as $field)
+    {
+        if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null)
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => "Missing or empty field: '$field'. All fields are required."
+            ]);
+            return;
+        }
+    }
+
+	$name = $user->name;
+    $username = $user->username;
+    $password = $user->password;
+    $image = $user->image;
+
+    $query = "INSERT INTO users 
+                (name, username, password, image) 
+            VALUES 
+                ('$name', '$username', '$password', '$image')";
+    try
+    {
+        global $db;
+        $db->exec($query);
+        $user->id = $db->lastInsertId();
+        echo json_encode([
+			"success" => true,
+			"message" => "User added successfully.",
+			"user" => $user
+		]);
+    }
+    catch (PDOException $e)
+    {
+        echo json_encode(["error" => ["text" => $e->getMessage()]]);
+    }
+}
+
+function deleteUser($id)
+{
+    $query = "DELETE FROM users WHERE id=$id";
+    try
+    {
+        global $db;
+        $rowsAffected = $db->exec($query);
+        if ($rowsAffected > 0)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "User deleted successfully."
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No user found with ID $id."
+			]);
+		}
+    }
+    catch (PDOException $e)
+    {
+        echo json_encode(["error" => ["text" => $e->getMessage()]]);
+    }
+}
+
+function updateUser($id)
+{
+    global $app;
+    $request = $app->request();
+    $user = json_decode($request->getBody());
+
+    if (!$user)
+    {
+        echo json_encode([
+            "success" => false,
+            "message" => "Invalid JSON format."
+        ]);
+        return;
+    }
+    
+    $requiredFields = ['name', 'username', 'password', 'image'];
+    foreach ($requiredFields as $field)
+    {
+        if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null)
+        {
+            echo json_encode([
+                "success" => false,
+                "message" => "Missing or empty field: '$field'. All fields are required."
+            ]);
+            return;
+        }
+    }
+
+    $name = $user->name;
+    $username = $user->username;
+    $password = $user->password;
+    $image = $user->image;
+
+    $query = "UPDATE users SET name='$name', username='$username', password='$password', 
+            image ='$image' WHERE id='$id'";
+    
+    try
+    {
+        global $db;
+        $rowsAffected = $db->exec($query);
+		if ($rowsAffected > 0)
+        {
+			echo json_encode([
+				"success" => true,
+				"message" => "User updated successfully.",
+				"user" => $user
+			]);
+		}
+        else
+        {
+			echo json_encode([
+				"success" => false,
+				"message" => "No user found with ID $id or no changes made."
+			]);
+		}
+    }
+    catch (PDOException $e)
+    {
+        echo '{"error":{"text":' . $e->getMessage() . '}}';
+    }
+}
 ?>
