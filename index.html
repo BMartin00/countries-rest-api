@@ -1,0 +1,84 @@
+<html>
+<head>
+    <title>Countries with Flags</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.dataTables.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/jquery.DataTables.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+</head>
+<body>
+    <h2>Countries with Flags</h2>
+
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#home" role="tab" data-toggle="tab"> <span class="glyphicon glyphicon-home"></span> Home</a></li>
+        <li><a href="#countries" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe"></span> Countries</a></li>
+        <li><a href="#users" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-user"></span> User Details</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <h1>Home Page</h1>
+			<p>Welcome to the Countries with Flags application</p>
+        </div>
+
+        <div class="tab-pane" id="countries">
+            <table id="countries_table_id" class="display">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Capital</th>
+                        <th>Region</th>
+                        <th>Population</th>
+                        <th>Area</th>
+                        <th>Language</th>
+                        <th>Currency</th>
+                        <th>GDP</th>
+                        <th>Flag URL</th>
+                        <th>More</th>
+                    </tr>
+                <tbody id="countries_table_body">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="tab-pane" id="users">
+            <table id="users_table_id" class="display">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Image</th>
+                        <th>More</th>
+                    </tr>
+                <tbody id="users_table_body">
+                </tbody>
+            </table>
+        </div> 
+    </div>
+
+    <!-- definition for Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Country in Detail</h4>
+                </div>
+                <div class="modal-body" id="contents">
+                    <img id="modalCountryPic">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
