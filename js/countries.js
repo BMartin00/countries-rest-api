@@ -1,23 +1,23 @@
-var rootURL = "http://localhost/countries-rest-api/api/countries"
+var countriesRootURL = "http://localhost/countries-rest-api/api/countries"
 
-var findAll = function(){
-	console.log('findAll');
+var findAllCountries = function(){
+	console.log('findAllCountries');
 	$.ajax({
 		type: 'GET',
-		url: rootURL,
+		url: countriesRootURL,
 		dataType: "json",
 		success: renderList
 	});
 };
 
-var findById = function(id){
-    console.log('findById: ' + id);
+var findCountryById = function(id){
+    console.log('findCountryById: ' + id);
     $.ajax({
         type: 'GET',
-        url: rootURL + '/' + id,
+        url: countriesRootURL + '/' + id,
         dataType: "json",
         success: function(data){
-            console.log('findById success:', data);
+            console.log('findCountryById success:', data);
 
             var country = data.country;
             renderDetails(country);
@@ -54,13 +54,13 @@ var renderDetails=function(country) {
 };
 
 var searchByName = function() {
-    var query = $("#searchName").val().trim();
+    var query = $("#searchCountryName").val().trim();
     console.log('searchByName:', query);
     
     if (query.length >= 2) {
         $.ajax({
             type: 'GET',
-            url: rootURL + '/search/' + encodeURIComponent(query),
+            url: countriesRootURL + '/search/' + encodeURIComponent(query),
             dataType: "json",
             success: function(data) {
                 console.log('searchByName response:', data);
@@ -77,13 +77,13 @@ var searchByName = function() {
 };
 
 var searchByRegion = function() {
-    var region = $("#searchRegion").val().trim();
+    var region = $("#searchCountryRegion").val().trim();
     console.log('searchByRegion:', region);
     
     if (region.length >= 2) {
         $.ajax({
             type: 'GET',
-            url: rootURL + '/region/' + encodeURIComponent(region),
+            url: countriesRootURL + '/region/' + encodeURIComponent(region),
             dataType: "json",
             success: function(data) {
                 console.log('searchByRegion response:', data);
@@ -100,13 +100,13 @@ var searchByRegion = function() {
 };
 
 var searchByCapital = function() {
-    var capital = $("#searchCapital").val().trim();
+    var capital = $("#searchCountryCapital").val().trim();
     console.log('searchByCapital:', capital);
     
     if (capital.length >= 2) {
         $.ajax({
             type: 'GET',
-            url: rootURL + '/capital/' + encodeURIComponent(capital),
+            url: countriesRootURL + '/capital/' + encodeURIComponent(capital),
             dataType: "json",
             success: function(data) {
                 console.log('searchByCapital response:', data);
@@ -123,13 +123,13 @@ var searchByCapital = function() {
 };
 
 var searchByLanguage = function() {
-    var language = $("#searchLanguage").val().trim();
+    var language = $("#searchCountryLanguage").val().trim();
     console.log('searchByLanguage:', language);
     
     if (language.length >= 2) {
         $.ajax({
             type: 'GET',
-            url: rootURL + '/language/' + encodeURIComponent(language),
+            url: countriesRootURL + '/language/' + encodeURIComponent(language),
             dataType: "json",
             success: function(data) {
                 console.log('searchByLanguage response:', data);
@@ -204,7 +204,7 @@ var reloadAllCountries = function() {
         $('#countries_table_id').DataTable().destroy();
     }
     $('#countries_table_body').empty();
-    findAll();
+    findAllCountries();
 };
 
 var showError = function(message) {
@@ -262,7 +262,7 @@ var addCountry = function() {
 
     $.ajax({
         type: 'POST',
-        url: rootURL,
+        url: countriesRootURL,
         data: JSON.stringify(countryData),
         contentType: 'application/json',
         dataType: "json",
@@ -291,7 +291,7 @@ var loadCountryForUpdate = function() {
 
     $.ajax({
         type: 'GET',
-        url: rootURL + '/search/' + encodeURIComponent(countryName),
+        url: countriesRootURL + '/search/' + encodeURIComponent(countryName),
         dataType: "json",
         success: function(searchData) {
             if (!searchData.success || !searchData.countries) {
@@ -400,7 +400,7 @@ var updateCountry = function() {
 
     $.ajax({
         type: 'PUT',
-        url: rootURL + '/' + countryId,
+        url: countriesRootURL + '/' + countryId,
         data: JSON.stringify(updatedData),
         contentType: 'application/json',
         dataType: "json",
@@ -434,7 +434,7 @@ var deleteCountry = function() {
 
     $.ajax({
         type: 'GET',
-        url: rootURL + '/search/' + encodeURIComponent(countryName),
+        url: countriesRootURL + '/search/' + encodeURIComponent(countryName),
         dataType: "json",
         success: function(searchData) {
             if (!searchData.success || !searchData.countries) {
@@ -452,7 +452,7 @@ var deleteCountry = function() {
             if (confirm("Are you sure you want to delete " + countryName + "? This action cannot be undone.")) {
                 $.ajax({
                     type: 'DELETE',
-                    url: rootURL + '/' + countryId,
+                    url: countriesRootURL + '/' + countryId,
                     dataType: "json",
                     success: function(data) {
                         console.log('Country deleted successfully:', data);
@@ -484,18 +484,18 @@ function isValidUrl(string) {
 }
 
 $(document).ready(function() {
-    findAll();
+    findAllCountries();
     
     $(document).on("click", '#countries_table_body td', function() {
-        findById(this.id);
+        findCountryById(this.id);
     });
 
-    $("#searchName").on("keyup", function() { searchByName(); });
-    $("#searchRegion").on("keyup", function() { searchByRegion(); });
-    $("#searchCapital").on("keyup", function() { searchByCapital(); });
-    $("#searchLanguage").on("keyup", function() { searchByLanguage(); });
+    $("#searchCountryName").on("keyup", function() { searchByName(); });
+    $("#searchCountryRegion").on("keyup", function() { searchByRegion(); });
+    $("#searchCountryCapital").on("keyup", function() { searchByCapital(); });
+    $("#searchCountryLanguage").on("keyup", function() { searchByLanguage(); });
 
-    $("#addButton").on("click", function() {
+    $("#addCountryButton").on("click", function() {
         $('#addCountryModal').modal('show');
     });
 
@@ -503,7 +503,7 @@ $(document).ready(function() {
         addCountry();
     });
 
-    $("#updateButton").on("click", function() {
+    $("#updateCountryButton").on("click", function() {
         $('#updateCountryModal').modal('show');
         disableUpdateForm();
         $("#countryFoundAlert").hide();
@@ -525,7 +525,7 @@ $(document).ready(function() {
         updateCountry();
     });
 
-    $("#deleteButton").on("click", function() {
+    $("#deleteCountryButton").on("click", function() {
         $('#deleteCountryModal').modal('show');
     });
 
