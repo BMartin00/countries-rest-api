@@ -134,6 +134,62 @@ var showError = function(message) {
     });
 };
 
+var addUser = function() {
+    console.log("addUser function called");
+    
+    var userData = {
+        name: $("#userName").val(),
+        username: $("#userUsername").val(),
+        password: $("#userPassword").val(),
+        image: $("#userImage").val(),
+    };
+
+    console.log("User data to be sent:", userData);
+
+    for (var key in userData) {
+        if (!userData[key]) {
+            alert("Please fill in all fields! Missing: " + key);
+            return false;
+        }
+    }
+
+    if (!isValidUrl(userData.image)) {
+        alert("Please enter a valid URL for the image (e.g., https://flagcdn.com/CHANGETHIS.svg)");
+        return false;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: usersRootURL,
+        data: JSON.stringify(userData),
+        contentType: 'application/json',
+        dataType: "json",
+        success: function(data) {
+            console.log('User added successfully:', data);
+            $('#addUserModal').modal('hide');
+            $('#addUserForm')[0].reset();
+            reloadAllUsers();
+            alert("User added successfully!");
+        },
+        error: function(xhr, status, error) {
+            console.log('Add user error:', xhr.responseText);
+            alert("Error adding user: " + xhr.responseText);
+        }
+    });
+};
+
+
+
+
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
 $(document).ready(function() {
     findAllUsers();
     
@@ -142,4 +198,17 @@ $(document).ready(function() {
     });
 
     $("#searchUserName").on("keyup", function() { searchUserByName(); });
+
+    $("#addUserButton").on("click", function() {
+        $('#addUserModal').modal('show');
+    });
+
+    $("#btnConfirmAddCountry").on("click", function() {
+        addUser();
+    });
+
+    // Clear forms when modals are closed
+    $('#addUserModal').on('hidden.bs.modal', function () {
+        $('#addUserForm')[0].reset();
+    });
 });
