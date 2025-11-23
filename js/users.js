@@ -26,25 +26,25 @@ var renderUserList = function(data) {
         });
 };
 
-var searchUserByName = function() {
-    var userName = $("#searchUserName").val().trim();
-    console.log('searchUserByName:', userName);
+var searchUserByUsername = function() {
+    var userUsername = $("#searchUserUsername").val().trim();
+    console.log('searchUserByUsername:', userUsername);
     
-    if (userName.length >= 2) {
+    if (userUsername.length >= 2) {
         $.ajax({
             type: 'GET',
-            url: usersRootURL + '/search/' + encodeURIComponent(userName),
+            url: usersRootURL + '/search/' + encodeURIComponent(userUsername),
             dataType: "json",
             success: function(data) {
-                console.log('searchUserByName response:', data);
+                console.log('searchUserByUsername response:', data);
                 handleUserSearchResponse(data);
             },
             error: function(xhr, status, error) {
-                console.log('searchUserByName error:', error);
+                console.log('searchUserByUsername error:', error);
                 showError('Search error: ' + error);
             }
         });
-    } else if (userName.length === 0) {
+    } else if (userUsername.length === 0) {
         reloadAllUsers();
     }
 };
@@ -345,7 +345,7 @@ function isValidUrl(string) {
 $(document).ready(function() {
     findAllUsers();
 
-    $("#searchUserName").on("keyup", function() { searchUserByName(); });
+    $("#searchUserUsername").on("keyup", function() { searchUserByUsername(); });
 
     $("#addUserButton").on("click", function() {
         $('#addUserModal').modal('show');
