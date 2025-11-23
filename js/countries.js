@@ -64,7 +64,7 @@ var searchByName = function() {
             dataType: "json",
             success: function(data) {
                 console.log('searchByName response:', data);
-                handleSearchResponse(data);
+                handleCountrySearchResponse(data);
             },
             error: function(xhr, status, error) {
                 console.log('searchByRegion error:', error);
@@ -87,7 +87,7 @@ var searchByRegion = function() {
             dataType: "json",
             success: function(data) {
                 console.log('searchByRegion response:', data);
-                handleSearchResponse(data);
+                handleCountrySearchResponse(data);
             },
             error: function(xhr, status, error) {
                 console.log('searchByRegion error:', error);
@@ -110,7 +110,7 @@ var searchByCapital = function() {
             dataType: "json",
             success: function(data) {
                 console.log('searchByCapital response:', data);
-                handleSearchResponse(data);
+                handleCountrySearchResponse(data);
             },
             error: function(xhr, status, error) {
                 console.log('searchByCapital error:', error);
@@ -133,7 +133,7 @@ var searchByLanguage = function() {
             dataType: "json",
             success: function(data) {
                 console.log('searchByLanguage response:', data);
-                handleSearchResponse(data);
+                handleCountrySearchResponse(data);
             },
             error: function(xhr, status, error) {
                 console.log('searchByLanguage error:', error);
@@ -145,8 +145,8 @@ var searchByLanguage = function() {
     }
 };
 
-var handleSearchResponse = function(data) {
-    console.log('handleSearchResponse data:', data);
+var handleCountrySearchResponse = function(data) {
+    console.log('handleCountrySearchResponse data:', data);
     
     if ($.fn.DataTable.isDataTable('#countries_table_id')) {
         $('#countries_table_id').DataTable().destroy();
