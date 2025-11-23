@@ -39,7 +39,8 @@ var renderList = function(data) {
         var table = $('#countries_table_id').DataTable({
             searching: false,
             paging: true,
-            ordering: true
+            ordering: true,
+            autoWidth: false
         });
 };
 
@@ -164,7 +165,8 @@ var handleSearchResponse = function(data) {
             searching: false,
             paging: false,
             ordering: false,
-            info: false
+            info: false,
+            autoWidth: false
         });
     } else {
         $.each(countriesArray, function(index, country) {
@@ -189,7 +191,8 @@ var handleSearchResponse = function(data) {
         $('#countries_table_id').DataTable( {
             searching: false,
             paging: true,
-            ordering: true
+            ordering: true,
+            autoWidth: false
         });
     }
 };
@@ -211,7 +214,8 @@ var showError = function(message) {
         searching: false,
         paging: true,
         ordering: true,
-        info: false
+        info: false,
+        autoWidth: false
     });
 };
 
