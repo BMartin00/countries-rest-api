@@ -550,4 +550,17 @@ $(document).ready(function() {
     $('#deleteCountryModal').on('hidden.bs.modal', function () {
         $('#deleteCountryForm')[0].reset();
     });
+
+    // Prevent form submission on Enter key in delete country modal
+    $("#deleteCountryName").on("keypress", function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            deleteCountry();
+        }
+    });
+
+    // Also prevent the default form submission
+    $("#deleteCountryForm").on("submit", function(e) {
+        e.preventDefault();
+    });
 });

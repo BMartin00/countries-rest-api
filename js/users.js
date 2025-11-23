@@ -402,4 +402,17 @@ $(document).ready(function() {
     $('#deleteUserModal').on('hidden.bs.modal', function () {
         $('#deleteUserForm')[0].reset();
     });
+
+    // Prevent form submission on Enter key in delete user modal
+    $("#deleteUserForm").on("keypress", function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            deleteUser();
+        }
+    });
+
+    // Also prevent the default form submission
+    $("#deleteUserForm").on("submit", function(e) {
+        e.preventDefault();
+    });
 });
