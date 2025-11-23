@@ -10,21 +10,6 @@ var findAllUsers = function(){
 	});
 };
 
-var findUserById = function(id){
-    console.log('findUserById: ' + id);
-    $.ajax({
-        type: 'GET',
-        url: usersRootURL + '/' + id,
-        dataType: "json",
-        success: function(data){
-            console.log('findUserById success:', data);
-
-            var user = data.user;
-            renderUserDetails(user);
-        }
-    });
-};
-
 var renderUserList = function(data) {
     console.log("DATA RECEIVED:", data);
 	list=data.users;
@@ -192,10 +177,6 @@ function isValidUrl(string) {
 
 $(document).ready(function() {
     findAllUsers();
-    
-    $(document).on("click", '#users_table_body td', function() {
-        findUserById(this.id);
-    });
 
     $("#searchUserName").on("keyup", function() { searchUserByName(); });
 
