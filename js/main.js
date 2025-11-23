@@ -34,7 +34,8 @@ var renderList = function(data) {
 				country.capital+'</td><td>'+country.region+'</td><td>'+country.population+
 				'</td><td>'+country.area+'</td><td>'+country.language+
                 '</td><td>'+country.currency+'</td><td>'+country.gdp+
-                '</td><td>'+country.flag_url+'</td><td id="'+country.id+'"><a href="#">More Info</a></td></tr>');
+                '</td><td><img src="'+country.flag_url+'" alt="'+country.name+' flag" style="width: 50px; height: auto;"></td><td id="'
+                +country.id+'"><a href="#">More Info</a></td></tr>');
 	});
         var table = $('#countries_table_id').DataTable({
             searching: false,
@@ -45,7 +46,7 @@ var renderList = function(data) {
 };
 
 var renderDetails=function(country) {
-    //$('#modalCountryPic').attr('src', country.flag_url);
+    $('#modalCountryPic').attr('src', country.flag_url);
     var htmlStr='<h2>'+country.name+'</h2><h2>'+country.capital+'</h2><p>'+country.description+'<br><hr>';
     $("#contents").html(htmlStr);
     $('#myModal').modal('show');
