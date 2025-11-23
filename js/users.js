@@ -281,9 +281,57 @@ var updateUser = function() {
     });
 };
 
+var deleteUser = function() {
+    console.log("deleteUser function called");
+    
+    var userName = $("#deleteUserName").val().trim();
+    
+    if (!userName) {
+        alert("Please enter a name to delete!");
+        return false;
+    }
 
+    $.ajax({
+        type: 'GET',
+        url: usersRootURL + '/search/' + encodeURIComponent(userName),
+        dataType: "json",
+        success: function(searchUserData) {
+            if (!searchUserData.success || !searchUserData.users) {
+                alert("User not found! Please check the name and try again.");
+                return;
+            }
 
+            var user = searchUserData.users;
+            if (Array.isArray(user)) {
+                user = user[0];
+            }
 
+            var userId = user.id;
+            
+            if (confirm("Are you sure you want to delete " + userName + "? This action cannot be undone.")) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: usersRootURL + '/' + userId,
+                    dataType: "json",
+                    success: function(data) {
+                        console.log('User deleted successfully:', data);
+                        $('#deleteUserModal').modal('hide');
+                        $('#deleteUserForm')[0].reset();
+                        reloadAllUsers();
+                        alert("User deleted successfully!");
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Delete user error:', xhr.responseText);
+                        alert("Error deleting user: " + xhr.responseText);
+                    }
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Error finding user: " + error);
+        }
+    });
+};
 
 function isValidUrl(string) {
     try {
@@ -329,6 +377,14 @@ $(document).ready(function() {
         updateUser();
     });
 
+    $("#deleteUserButton").on("click", function() {
+        $('#deleteUserModal').modal('show');
+    });
+
+    $("#btnConfirmDeleteUser").on("click", function() {
+        deleteUser();
+    });
+
     // Clear forms when modals are closed
     $('#addUserModal').on('hidden.bs.modal', function () {
         $('#addUserForm')[0].reset();
@@ -341,5 +397,9 @@ $(document).ready(function() {
         disableUserUpdateForm();
         $("#userFoundAlert").hide();
         $("#userNotFoundAlert").hide();
+    });
+
+    $('#deleteUserModal').on('hidden.bs.modal', function () {
+        $('#deleteUserForm')[0].reset();
     });
 });
