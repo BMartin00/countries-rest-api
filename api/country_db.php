@@ -70,7 +70,7 @@ function findByName($name)
 	{
 		global $db;
 		$countries = $db->query($query);
-		$countries = $countries->fetch(PDO::FETCH_ASSOC);
+		$countries = $countries->fetchAll(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
 		if ($countries)
         {
@@ -143,7 +143,7 @@ function getCountriesByCapital($capital)
 	{
 		global $db;
 		$countries = $db->query($query);
-		$countries = $countries->fetch(PDO::FETCH_ASSOC);
+		$countries = $countries->fetchAll(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
 		if ($countries)
         {
@@ -464,7 +464,7 @@ function searchByUsername($username)
 	{
 		global $db;
 		$users = $db->query($query);
-		$users = $users->fetch(PDO::FETCH_ASSOC);
+		$users = $users->fetchAll(PDO::FETCH_ASSOC);
 		header("Content-Type: application/json", true);
 		if ($users)
         {
