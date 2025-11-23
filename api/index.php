@@ -18,7 +18,7 @@ $app->put('/countries/:id', 'updateCountry');
 
 $app->get('/users', 'getUsers');
 $app->get('/users/:id', 'getUser');
-$app->get('/users/search/:query', 'searchByName');
+$app->get('/users/search/:query', 'searchByUsername');
 $app->post('/users', 'addUser');
 $app->delete('/users/:id', 'deleteUser');
 $app->put('/users/:id', 'updateUser');

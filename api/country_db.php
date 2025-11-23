@@ -456,9 +456,9 @@ function getUser($id)
 	}
 }
 
-function searchByName($name)
+function searchByUsername($username)
 {
-	$query = "SELECT * FROM users WHERE UPPER(name) LIKE " . '"%' . $name . '%"' . " ORDER BY name";
+	$query = "SELECT * FROM users WHERE UPPER(username) LIKE " . '"%' . $username . '%"' . " ORDER BY username";
 
 	try
 	{
@@ -470,7 +470,7 @@ function searchByName($name)
         {
 			echo json_encode([
 				"success" => true,
-				"message" => "User search successful.",
+				"message" => "Username search successful.",
 				"users" => $users
 			]);
 		}
@@ -478,7 +478,7 @@ function searchByName($name)
         {
 			echo json_encode([
 				"success" => false,
-				"message" => "No users found matching '$name'."
+				"message" => "No username found matching '$username'."
 			]);
 		}
 	}
