@@ -27,11 +27,24 @@
         </div>
 
         <div class="tab-pane" id="countries">
-            <div class="form-inline">
-                <input type="text" id="searchName" class="form-control" placeholder="Search Name">
-                <input type="text" id="searchRegion" class="form-control" placeholder="Search Region">
-                <input type="text" id="searchCapital" class="form-control" placeholder="Search Capital">
-                <input type="text" id="searchLanguage" class="form-control" placeholder="Search Language">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-inline">
+                        <input type="text" id="searchName" class="form-control" placeholder="Search Name">
+                        <input type="text" id="searchRegion" class="form-control" placeholder="Search Region">
+                        <input type="text" id="searchCapital" class="form-control" placeholder="Search Capital">
+                        <input type="text" id="searchLanguage" class="form-control" placeholder="Search Language">
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="form-inline">
+                        <input type="text" id="addCountryInput" class="form-control" placeholder="Enter a Country">
+                        <button id="btnAdd" class="btn btn-success">Add Country</button>
+                        <button id="btnUpdate" class="btn btn-primary">Update Country</button>
+                        <button id="btnDelete" class="btn btn-danger">Delete Country</button>
+                    </div>
+                </div>
             </div>
 
             <table id="countries_table_id" class="display">
