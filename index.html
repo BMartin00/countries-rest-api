@@ -39,10 +39,10 @@
                 
                 <div class="col-md-4">
                     <div class="form-inline">
-                        <input type="text" id="addCountryInput" class="form-control" placeholder="Enter a Country">
-                        <button id="btnAdd" class="btn btn-success">Add Country</button>
-                        <button id="btnUpdate" class="btn btn-primary">Update Country</button>
-                        <button id="btnDelete" class="btn btn-danger">Delete Country</button>
+                        <input type="text" id="CountryInput" class="form-control" placeholder="Enter a Country">
+                        <button id="addButton" class="btn btn-success">Add Country</button>
+                        <button id="updateButton" class="btn btn-primary">Update Country</button>
+                        <button id="deleteButton" class="btn btn-danger">Delete Country</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
         </div> 
     </div>
 
-    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal fade" id="descriptionModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -94,6 +94,166 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Country Modal -->
+    <div class="modal fade" id="addCountryModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Country</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addCountryForm">
+                        <div class="form-group">
+                            <label for="countryName">Country Name:</label>
+                            <input type="text" class="form-control" id="countryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryCapital">Capital:</label>
+                            <input type="text" class="form-control" id="countryCapital" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryRegion">Region:</label>
+                            <input type="text" class="form-control" id="countryRegion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryPopulation">Population:</label>
+                            <input type="number" class="form-control" id="countryPopulation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryArea">Area (km²):</label>
+                            <input type="number" class="form-control" id="countryArea" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryLanguage">Language:</label>
+                            <input type="text" class="form-control" id="countryLanguage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryCurrency">Currency:</label>
+                            <input type="text" class="form-control" id="countryCurrency" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryGDP">GDP (USD):</label>
+                            <input type="number" class="form-control" id="countryGDP" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryFlag">Flag URL:</label>
+                            <input type="url" class="form-control" id="countryFlag" value="https://flagcdn.com/CHANGETHIS.svg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="countryDescription">Description:</label>
+                            <textarea class="form-control" id="countryDescription" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmAdd">Add Country</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Country Modal -->
+    <div class="modal fade" id="updateCountryModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update Country</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="updateCountryForm">
+                        <div class="form-group">
+                            <label for="updateCountryName">Country Name to Update:</label>
+                            <input type="text" class="form-control" id="updateCountryName" placeholder="Enter country name and press Enter" required>
+                            <small class="form-text text-muted">Enter the country name and press Enter to load its current data</small>
+                        </div>
+                        <div id="countryFoundAlert" class="alert alert-success" style="display: none;">
+                            Country found! Current data loaded below. Make your changes and click Update.
+                        </div>
+                        <div id="countryNotFoundAlert" class="alert alert-danger" style="display: none;">
+                            Country not found! Please check the name and try again.
+                        </div>
+                        <hr>
+                        <h5>Country Details:</h5>
+                        <div class="form-group">
+                            <label for="updateName">Country Name:</label>
+                            <input type="text" class="form-control" id="updateName" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCapital">Capital:</label>
+                            <input type="text" class="form-control" id="updateCapital" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateRegion">Region:</label>
+                            <input type="text" class="form-control" id="updateRegion" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updatePopulation">Population:</label>
+                            <input type="number" class="form-control" id="updatePopulation" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateArea">Area (km²):</label>
+                            <input type="number" class="form-control" id="updateArea" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateLanguage">Language:</label>
+                            <input type="text" class="form-control" id="updateLanguage" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCurrency">Currency:</label>
+                            <input type="text" class="form-control" id="updateCurrency" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateGDP">GDP (USD):</label>
+                            <input type="number" class="form-control" id="updateGDP" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateFlag">Flag URL:</label>
+                            <input type="url" class="form-control" id="updateFlag" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateDescription">Description:</label>
+                            <textarea class="form-control" id="updateDescription" rows="3" required disabled></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmUpdate" disabled>Update Country</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Country Modal -->
+    <div class="modal fade" id="deleteCountryModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete Country</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteCountryForm">
+                        <div class="form-group">
+                            <label for="deleteCountryName">Country Name to Delete:</label>
+                            <input type="text" class="form-control" id="deleteCountryName" placeholder="Enter exact country name" required>
+                        </div>
+                        <div class="alert alert-warning">
+                            <strong>Warning!</strong> This action cannot be undone.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete">Delete Country</button>
                 </div>
             </div>
         </div>

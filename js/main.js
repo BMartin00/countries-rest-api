@@ -50,7 +50,7 @@ var renderDetails=function(country) {
     var htmlStr='<p>'+country.description+'<br><hr>';
     $("#countrysName").html(modal);
     $("#contents").html(htmlStr);
-    $('#myModal').modal('show');
+    $('#descriptionModal').modal('show');
 };
 
 var searchByName = function() {
@@ -221,6 +221,268 @@ var showError = function(message) {
     });
 };
 
+var addCountry = function() {
+    console.log("addCountry function called");
+    
+    var countryData = {
+        name: $("#countryName").val(),
+        capital: $("#countryCapital").val(),
+        region: $("#countryRegion").val(),
+        population: $("#countryPopulation").val(),
+        area: $("#countryArea").val(),
+        language: $("#countryLanguage").val(),
+        currency: $("#countryCurrency").val(),
+        gdp: $("#countryGDP").val(),
+        flag_url: $("#countryFlag").val(),
+        description: $("#countryDescription").val()
+    };
+
+    console.log("Country data to be sent:", countryData);
+
+    for (var key in countryData) {
+        if (!countryData[key]) {
+            alert("Please fill in all fields! Missing: " + key);
+            return false;
+        }
+    }
+
+    if (!isValidUrl(countryData.flag_url)) {
+        alert("Please enter a valid URL for the flag (e.g., https://flagcdn.com/CHANGETHIS.svg)");
+        return false;
+    }
+
+    var numericFields = ['population', 'area', 'gdp'];
+    for (var i = 0; i < numericFields.length; i++) {
+        var field = numericFields[i];
+        if (isNaN(countryData[field]) || countryData[field] <= 0) {
+            alert("Please enter a valid positive number for " + field);
+            return false;
+        }
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: rootURL,
+        data: JSON.stringify(countryData),
+        contentType: 'application/json',
+        dataType: "json",
+        success: function(data) {
+            console.log('Country added successfully:', data);
+            $('#addCountryModal').modal('hide');
+            $('#addCountryForm')[0].reset();
+            reloadAllCountries();
+            alert("Country added successfully!");
+        },
+        error: function(xhr, status, error) {
+            console.log('Add country error:', xhr.responseText);
+            alert("Error adding country: " + xhr.responseText);
+        }
+    });
+};
+
+var loadCountryForUpdate = function() {
+    var countryName = $("#updateCountryName").val().trim();
+    
+    if (!countryName) {
+        return;
+    }
+
+    console.log("Loading country data for:", countryName);
+
+    $.ajax({
+        type: 'GET',
+        url: rootURL + '/search/' + encodeURIComponent(countryName),
+        dataType: "json",
+        success: function(searchData) {
+            if (!searchData.success || !searchData.countries) {
+                $("#countryFoundAlert").hide();
+                $("#countryNotFoundAlert").show();
+                disableUpdateForm();
+                return;
+            }
+
+            var country = searchData.countries;
+            if (Array.isArray(country)) {
+                country = country[0];
+            }
+
+            $("#updateName").val(country.name || '');
+            $("#updateCapital").val(country.capital || '');
+            $("#updateRegion").val(country.region || '');
+            $("#updatePopulation").val(country.population || '');
+            $("#updateArea").val(country.area || '');
+            $("#updateLanguage").val(country.language || '');
+            $("#updateCurrency").val(country.currency || '');
+            $("#updateGDP").val(country.gdp || '');
+            $("#updateFlag").val(country.flag_url || '');
+            $("#updateDescription").val(country.description || '');
+
+            $("#updateCountryForm").data('countryId', country.id);
+
+            $("#countryNotFoundAlert").hide();
+            $("#countryFoundAlert").show();
+            enableUpdateForm();
+        },
+        error: function(xhr, status, error) {
+            $("#countryFoundAlert").hide();
+            $("#countryNotFoundAlert").show();
+            disableUpdateForm();
+        }
+    });
+};
+
+var enableUpdateForm = function() {
+    $("#updateName").prop('disabled', false);
+    $("#updateCapital").prop('disabled', false);
+    $("#updateRegion").prop('disabled', false);
+    $("#updatePopulation").prop('disabled', false);
+    $("#updateArea").prop('disabled', false);
+    $("#updateLanguage").prop('disabled', false);
+    $("#updateCurrency").prop('disabled', false);
+    $("#updateGDP").prop('disabled', false);
+    $("#updateFlag").prop('disabled', false);
+    $("#updateDescription").prop('disabled', false);
+    $("#btnConfirmUpdate").prop('disabled', false);
+};
+
+var disableUpdateForm = function() {
+    $("#updateName").prop('disabled', true).val('');
+    $("#updateCapital").prop('disabled', true).val('');
+    $("#updateRegion").prop('disabled', true).val('');
+    $("#updatePopulation").prop('disabled', true).val('');
+    $("#updateArea").prop('disabled', true).val('');
+    $("#updateLanguage").prop('disabled', true).val('');
+    $("#updateCurrency").prop('disabled', true).val('');
+    $("#updateGDP").prop('disabled', true).val('');
+    $("#updateFlag").prop('disabled', true).val('');
+    $("#updateDescription").prop('disabled', true).val('');
+    $("#btnConfirmUpdate").prop('disabled', true);
+};
+
+var updateCountry = function() {
+    console.log("updateCountry function called");
+    
+    var countryId = $("#updateCountryForm").data('countryId');
+    var originalName = $("#updateCountryForm").data('originalName');
+    var newName = $("#updateName").val().trim();
+    
+    if (!countryId) {
+        alert("Please first load a country by entering its name!");
+        return false;
+    }
+
+    var updatedData = {
+        name: newName,
+        capital: $("#updateCapital").val(),
+        region: $("#updateRegion").val(),
+        population: $("#updatePopulation").val(),
+        area: $("#updateArea").val(),
+        language: $("#updateLanguage").val(),
+        currency: $("#updateCurrency").val(),
+        gdp: $("#updateGDP").val(),
+        flag_url: $("#updateFlag").val(),
+        description: $("#updateDescription").val()
+    };
+
+    console.log("Update data:", updatedData);
+
+    for (var key in updatedData) {
+        if (!updatedData[key]) {
+            alert("Please fill in all fields! Missing: " + key);
+            return false;
+        }
+    }
+
+    if (!isValidUrl(updatedData.flag_url)) {
+        alert("Please enter a valid URL for the flag");
+        return false;
+    }
+
+    $.ajax({
+        type: 'PUT',
+        url: rootURL + '/' + countryId,
+        data: JSON.stringify(updatedData),
+        contentType: 'application/json',
+        dataType: "json",
+        success: function(data) {
+            console.log('Country updated successfully:', data);
+            $('#updateCountryModal').modal('hide');
+            $('#updateCountryForm')[0].reset();
+            $("#updateCountryForm").removeData('countryId');
+            disableUpdateForm();
+            $("#countryFoundAlert").hide();
+            $("#countryNotFoundAlert").hide();
+            reloadAllCountries();
+            alert("Country updated successfully!");
+        },
+        error: function(xhr, status, error) {
+            console.log('Update country error:', xhr.responseText);
+            alert("Error updating country: " + xhr.responseText);
+        }
+    });
+};
+
+var deleteCountry = function() {
+    console.log("deleteCountry function called");
+    
+    var countryName = $("#deleteCountryName").val().trim();
+    
+    if (!countryName) {
+        alert("Please enter a country name to delete!");
+        return false;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: rootURL + '/search/' + encodeURIComponent(countryName),
+        dataType: "json",
+        success: function(searchData) {
+            if (!searchData.success || !searchData.countries) {
+                alert("Country not found! Please check the name and try again.");
+                return;
+            }
+
+            var country = searchData.countries;
+            if (Array.isArray(country)) {
+                country = country[0];
+            }
+
+            var countryId = country.id;
+            
+            if (confirm("Are you sure you want to delete " + countryName + "? This action cannot be undone.")) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: rootURL + '/' + countryId,
+                    dataType: "json",
+                    success: function(data) {
+                        console.log('Country deleted successfully:', data);
+                        $('#deleteCountryModal').modal('hide');
+                        $('#deleteCountryForm')[0].reset();
+                        reloadAllCountries();
+                        alert("Country deleted successfully!");
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Delete country error:', xhr.responseText);
+                        alert("Error deleting country: " + xhr.responseText);
+                    }
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Error finding country: " + error);
+        }
+    });
+};
+
+function isValidUrl(string) {
+    try {
+        new URL(string);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
 $(document).ready(function() {
     findAll();
     
@@ -232,4 +494,60 @@ $(document).ready(function() {
     $("#searchRegion").on("keyup", function() { searchByRegion(); });
     $("#searchCapital").on("keyup", function() { searchByCapital(); });
     $("#searchLanguage").on("keyup", function() { searchByLanguage(); });
+
+    $("#addButton").on("click", function() {
+        $('#addCountryModal').modal('show');
+    });
+
+    $("#btnConfirmAdd").on("click", function() {
+        addCountry();
+    });
+
+    $("#updateButton").on("click", function() {
+        $('#updateCountryModal').modal('show');
+        disableUpdateForm();
+        $("#countryFoundAlert").hide();
+        $("#countryNotFoundAlert").hide();
+    });
+
+    $("#updateCountryName").on("keypress", function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            loadCountryForUpdate();
+        }
+    });
+
+    $("#updateCountryName").on("blur", function() {
+        loadCountryForUpdate();
+    });
+
+    $("#btnConfirmUpdate").on("click", function() {
+        updateCountry();
+    });
+
+    $("#deleteButton").on("click", function() {
+        $('#deleteCountryModal').modal('show');
+    });
+
+    $("#btnConfirmDelete").on("click", function() {
+        deleteCountry();
+    });
+
+    // Clear forms when modals are closed
+    $('#addCountryModal').on('hidden.bs.modal', function () {
+        $('#addCountryForm')[0].reset();
+    });
+
+    $('#updateCountryModal').on('hidden.bs.modal', function () {
+        $('#updateCountryForm')[0].reset();
+        $("#updateCountryForm").removeData('countryId');
+        $("#updateCountryForm").removeData('originalName');
+        disableUpdateForm();
+        $("#countryFoundAlert").hide();
+        $("#countryNotFoundAlert").hide();
+    });
+
+    $('#deleteCountryModal').on('hidden.bs.modal', function () {
+        $('#deleteCountryForm')[0].reset();
+    });
 });
