@@ -316,5 +316,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Update User Modal -->
+    <div class="modal fade" id="updateUserModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update User</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="updateUserForm">
+                        <div class="form-group">
+                            <label for="updateUserName">User Name to Update:</label>
+                            <input type="text" class="form-control" id="updateUserName" placeholder="Enter user name and press Enter" required>
+                            <small class="form-text text-muted">Enter the user name and press Enter to load its current data</small>
+                        </div>
+                        <div id="userFoundAlert" class="alert alert-success" style="display: none;">
+                            User found! Current data loaded below. Make your changes and click Update.
+                        </div>
+                        <div id="userNotFoundAlert" class="alert alert-danger" style="display: none;">
+                            User not found! Please check the name and try again.
+                        </div>
+                        <hr>
+                        <h5>User Details:</h5>
+                        <div class="form-group">
+                            <label for="updatedUserName">Name:</label>
+                            <input type="text" class="form-control" id="updatedUserName" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserUsername">Username:</label>
+                            <input type="text" class="form-control" id="updateUserUsername" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserPassword">Password:</label>
+                            <input type="password" class="form-control" id="updateUserPassword" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateUserImage">Image:</label>
+                            <input type="text" class="form-control" id="updateUserImage" required disabled>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmUpdateUser" disabled>Update User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>

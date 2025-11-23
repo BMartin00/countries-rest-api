@@ -163,6 +163,125 @@ var addUser = function() {
     });
 };
 
+var loadUserForUpdate = function() {
+    var userName = $("#updateUserName").val().trim();
+    
+    if (!userName) {
+        return;
+    }
+
+    console.log("Loading user data for:", userName);
+
+    $.ajax({
+        type: 'GET',
+        url: usersRootURL + '/search/' + encodeURIComponent(userName),
+        dataType: "json",
+        success: function(searchData) {
+            if (!searchData.success || !searchData.users) {
+                $("#userFoundAlert").hide();
+                $("#userNotFoundAlert").show();
+                disableUserUpdateForm();
+                return;
+            }
+
+            var user = searchData.users;
+            if (Array.isArray(user)) {
+                user = user[0];
+            }
+
+            $("#updatedUserName").val(user.name || '');
+            $("#updateUserUsername").val(user.username || '');
+            $("#updateUserPassword").val(user.password || '');
+            $("#updateUserImage").val(user.image || '');
+
+            $("#updateUserForm").data('userId', user.id);
+
+            $("#userNotFoundAlert").hide();
+            $("#userFoundAlert").show();
+            enableUserUpdateForm();
+        },
+        error: function(xhr, status, error) {
+            $("#userFoundAlert").hide();
+            $("#userNotFoundAlert").show();
+            disableUserUpdateForm();
+        }
+    });
+};
+
+var enableUserUpdateForm = function() {
+    $("#updatedUserName").prop('disabled', false);
+    $("#updateUserUsername").prop('disabled', false);
+    $("#updateUserPassword").prop('disabled', false);
+    $("#updateUserImage").prop('disabled', false);
+    $("#btnConfirmUpdateUser").prop('disabled', false);
+};
+
+var disableUserUpdateForm = function() {
+    $("#updatedUserName").prop('disabled', true).val('');
+    $("#updateUserUsername").prop('disabled', true).val('');
+    $("#updateUserPassword").prop('disabled', true).val('');
+    $("#updateUserImage").prop('disabled', true).val('');
+    $("#btnConfirmUpdateUser").prop('disabled', true);
+};
+
+var updateUser = function() {
+    console.log("updateUser function called");
+    
+    var userId = $("#updateUserForm").data('userId');
+    var originalName = $("#updateUserForm").data('originalName');
+    var newName = $("#updatedUserName").val().trim();
+    
+    if (!userId) {
+        alert("Please first load a user by entering its name!");
+        return false;
+    }
+
+    var updatedUserData = {
+        name: newName,
+        username: $("#updateUserUsername").val(),
+        password: $("#updateUserPassword").val(),
+        image: $("#updateUserImage").val(),
+    };
+
+    console.log("Update data:", updatedUserData);
+
+    for (var key in updatedUserData) {
+        if (!updatedUserData[key]) {
+            alert("Please fill in all fields! Missing: " + key);
+            return false;
+        }
+    }
+
+    if (!isValidUrl(updatedUserData.image)) {
+        alert("Please enter a valid URL for the image");
+        return false;
+    }
+
+    $.ajax({
+        type: 'PUT',
+        url: usersRootURL + '/' + userId,
+        data: JSON.stringify(updatedUserData),
+        contentType: 'application/json',
+        dataType: "json",
+        success: function(data) {
+            console.log('User updated successfully:', data);
+            $('#updateUserModal').modal('hide');
+            $('#updateUserForm')[0].reset();
+            $("#updateUserForm").removeData('userId');
+            disableUserUpdateForm();
+            $("#userFoundAlert").hide();
+            $("#userNotFoundAlert").hide();
+            reloadAllUsers();
+            alert("User updated successfully!");
+        },
+        error: function(xhr, status, error) {
+            console.log('Update user error:', xhr.responseText);
+            alert("Error updating user: " + xhr.responseText);
+        }
+    });
+};
+
+
 
 
 
@@ -184,12 +303,43 @@ $(document).ready(function() {
         $('#addUserModal').modal('show');
     });
 
-    $("#btnConfirmAddCountry").on("click", function() {
+    $("#btnConfirmAddUser").on("click", function() {
         addUser();
+    });
+
+    $("#updateUserButton").on("click", function() {
+        $('#updateUserModal').modal('show');
+        disableUserUpdateForm();
+        $("#userFoundAlert").hide();
+        $("#userNotFoundAlert").hide();
+    });
+
+    $("#updateUserName").on("keypress", function(e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            loadUserForUpdate();
+        }
+    });
+
+    $("#updateUserName").on("blur", function() {
+        loadUserForUpdate();
+    });
+
+    $("#btnConfirmUpdateUser").on("click", function() {
+        updateUser();
     });
 
     // Clear forms when modals are closed
     $('#addUserModal').on('hidden.bs.modal', function () {
         $('#addUserForm')[0].reset();
+    });
+
+    $('#updateUserModal').on('hidden.bs.modal', function () {
+        $('#updateUserForm')[0].reset();
+        $("#updateUserForm").removeData('userId');
+        $("#updateUserForm").removeData('originalName');
+        disableUserUpdateForm();
+        $("#userFoundAlert").hide();
+        $("#userNotFoundAlert").hide();
     });
 });
