@@ -38,3 +38,9 @@ th, td {
 .modal-body .form-group {
     margin-bottom: 15px;
 }
+
+/* Modal button alignment */
+.modal-footer .btn {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
