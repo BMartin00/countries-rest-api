@@ -1,5 +1,7 @@
 var usersRootURL = "http://localhost/countries-rest-api/api/users"
 
+var appBasePath = "/countries-rest-api";
+
 var findAllUsers = function(){
 	console.log('findAllUsers');
 	$.ajax({
@@ -14,9 +16,11 @@ var renderUserList = function(data) {
     console.log("DATA RECEIVED:", data);
 	list=data.users;
         console.log("response");
+        
 	$.each(list, function(index, user) {
 		$('#users_table_body').append('<tr><td>'+user.name+'</td><td>'+
-				user.username+'</td><td>'+user.password+'</td><td>'+user.image+'</td></tr>');
+				user.username+'</td><td>'+user.password+'</td><td><img src="'+appBasePath+'/pics/'+user.image+
+                '" alt=" user" style="width: 50px; height: auto;"></td></tr>');
 	});
         var table = $('#users_table_id').DataTable({
             searching: false,
@@ -136,11 +140,6 @@ var addUser = function() {
             alert("Please fill in all fields! Missing: " + key);
             return false;
         }
-    }
-
-    if (!isValidUrl(userData.image)) {
-        alert("Please enter a valid URL for the image (e.g., https://flagcdn.com/CHANGETHIS.svg)");
-        return false;
     }
 
     $.ajax({
