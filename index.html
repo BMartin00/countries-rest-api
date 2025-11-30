@@ -2,31 +2,39 @@
 <head>
     <title>Countries with Flags</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- JavaScript libraries -->
     <script src="js/jquery.js"></script>
     <script src="js/jquery.dataTables.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/countries.js"></script>
     <script src="js/users.js"></script>
+
+    <!-- CSS stylesheets -->
     <link rel="stylesheet" href="css/jquery.DataTables.css"/>
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <link rel="stylesheet" href="css/styles.css"/>
+
+    <!-- WebPage Icon -->
     <link rel="icon" type="image/png" href="pics/flags_icon.jpg"/>
 </head>
 <body>
+    <!-- Main header with logo and title -->
     <h2 style="display: flex; align-items: center; gap: 10px;">
-    <img src="pics/flags_icon.jpg" alt="Flags Icon" style="height: 1.2em; width: auto;">
-    Countries with Flags
-</h2>
+        <img src="pics/flags_icon.jpg" alt="Flags Icon" style="height: 1.2em; width: auto;">
+        Countries with Flags
+    </h2>
 
-    <!-- Nav Tabs -->
+    <!-- Navigation Tabs for different sections -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#home" role="tab" data-toggle="tab"> <span class="glyphicon glyphicon-home"></span> Home</a></li>
         <li><a href="#countries" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe"></span> Countries</a></li>
         <li><a href="#users" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-user"></span> User Details</a></li>
     </ul>
 
-    <!-- Tab panes -->
+    <!-- Tab content panels -->
     <div class="tab-content">
+        <!-- Home Tab -->
         <div class="tab-pane active" id="home" style="text-align: center;">
             <h1>Home Page</h1>
 			<p>Welcome to the Countries with Flags application</p>
@@ -34,8 +42,10 @@
             <img src="pics/Flags_of_the_World.png" alt="Flags of the World" width="1200" height="600">
         </div>
 
+        <!-- Countries management tab -->
         <div class="tab-pane" id="countries">
             <div class="row">
+                <!-- Search filters for countries -->
                 <div class="col-md-6">
                     <div class="form-inline">
                         <input type="text" id="searchCountryName" class="form-control" placeholder="Search Country">
@@ -45,6 +55,7 @@
                     </div>
                 </div>
 
+                <!-- Country action buttons -->
                 <div class="col-md-4">
                     <div class="form-inline">
                         <button id="addCountryButton" class="btn btn-success">Add Country</button>
@@ -54,6 +65,7 @@
                 </div>
             </div>
 
+            <!-- Countries data table -->
             <table id="countries_table_id" class="display">
                 <thead>
                     <tr>
@@ -69,18 +81,22 @@
                         <th>Country's Description</th>
                     </tr>
                 <tbody id="countries_table_body">
+                    <!-- Countries data will be dynamically populated here -->
                 </tbody>
             </table>
         </div>
         
+        <!-- Users management tab -->
         <div class="tab-pane" id="users">
              <div class="row">
+                <!-- Search filter for users -->
                 <div class="col-md-2">
                     <div class="form-inline">
                         <input type="text" id="searchUserUsername" class="form-control" placeholder="Search Username">
                     </div>
                 </div>
                 
+                <!-- User action buttons -->
                 <div class="col-md-4">
                     <div class="form-inline">
                         <button id="addUserButton" class="btn btn-success">Add User</button>
@@ -90,6 +106,7 @@
                 </div>
             </div>
 
+            <!-- Users data table -->
             <table id="users_table_id" class="display">
                 <thead>
                     <tr>
@@ -99,11 +116,15 @@
                         <th>Image</th>
                     </tr>
                 <tbody id="users_table_body">
+                    <!-- Users data will be dynamically populated here -->
                 </tbody>
             </table>
         </div> 
     </div>
 
+    <!-- Countries Modals -->
+
+    <!-- Modal for displaying country descriptions -->
     <div class="modal fade" id="descriptionModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -112,7 +133,7 @@
                     <h4 class="modal-title" id="countrysName"></h4>
                 </div>
                 <div class="modal-body" id="contents">
-
+                    <!-- Country description content will be loaded here -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -191,11 +212,13 @@
                 </div>
                 <div class="modal-body">
                     <form id="updateCountryForm">
+                        <!-- Country search section -->
                         <div class="form-group">
                             <label for="updateCountryName">Country Name to Update:</label>
                             <input type="text" class="form-control" id="updateCountryName" placeholder="Enter country name and press Enter" required>
                             <small class="form-text text-muted">Enter the country name and press Enter to load its current data</small>
                         </div>
+                        <!-- Success/Error alerts for country search -->
                         <div id="countryFoundAlert" class="alert alert-success" style="display: none;">
                             Country found! Current data loaded below. Make your changes and click Update.
                         </div>
@@ -203,6 +226,7 @@
                             Country not found! Please check the name and try again.
                         </div>
                         <hr>
+                        <!-- Country details form (initially disabled) -->
                         <h5>Country Details:</h5>
                         <div class="form-group">
                             <label for="updateName">Country Name:</label>
@@ -281,7 +305,8 @@
         </div>
     </div>
 
-
+    <!-- Users Modals -->
+    
     <!-- Add User Modal -->
     <div class="modal fade" id="addUserModal" role="dialog">
         <div class="modal-dialog">
@@ -328,11 +353,13 @@
                 </div>
                 <div class="modal-body">
                     <form id="updateUserForm">
+                        <!-- User search section -->
                         <div class="form-group">
                             <label for="updateUserName">Username to Update:</label>
                             <input type="text" class="form-control" id="updateUserName" placeholder="Enter username and press Enter" required>
                             <small class="form-text text-muted">Enter the Username and press Enter to load its current data</small>
                         </div>
+                        <!-- Success/Error alerts for country search -->
                         <div id="userFoundAlert" class="alert alert-success" style="display: none;">
                             User found! Current data loaded below. Make your changes and click Update.
                         </div>
@@ -340,6 +367,7 @@
                             User not found! Please check the name and try again.
                         </div>
                         <hr>
+                        <!-- User details form (initially disabled) -->
                         <h5>User Details:</h5>
                         <div class="form-group">
                             <label for="updatedUserName">Name:</label>
