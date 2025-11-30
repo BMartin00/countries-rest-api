@@ -18,8 +18,9 @@ var renderUserList = function(data) {
         console.log("response");
         
 	$.each(list, function(index, user) {
+        var maskedPassword = '*'.repeat(user.password.length);
 		$('#users_table_body').append('<tr><td>'+user.name+'</td><td>'+
-				user.username+'</td><td>'+user.password+'</td><td><img src="'+appBasePath+'/pics/'+user.image+
+				user.username+'</td><td>'+maskedPassword+'</td><td><img src="'+appBasePath+'/pics/'+user.image+
                 '" alt=" user" style="width: 50px; height: auto;"></td></tr>');
 	});
         var table = $('#users_table_id').DataTable({
