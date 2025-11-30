@@ -1,5 +1,15 @@
 <?php
+/**
+ * COUNTRY RELATED FUNCTIONS
+ */
+
+/**
+ * Retrive all countries with optional sorting
+ *
+ * @return void JSON response
+ */
 function getCountries() {
+	// Check if parameter is provided, default to name
 	if (isset($_GET['sort'])) {
 		$col = $_GET['sort'];
 	} else {
@@ -23,6 +33,12 @@ function getCountries() {
 	}
 }
 
+/**
+ * Retrieve a specific country by ID
+ *
+ * @param int $id Country ID
+ * @return void JSON response
+ */
 function getCountry($id) {
 	$query = "SELECT * FROM countries WHERE id = '$id'";
 
@@ -48,6 +64,12 @@ function getCountry($id) {
 	}
 }
 
+/**
+ * Search countries by name using partial matching
+ *
+ * @param string $name Country name or partial name
+ * @return void JSON response
+ */
 function findByName($name) {
 	$query = "SELECT * FROM countries WHERE UPPER(name) LIKE " . '"%' . $name . '%"' . " ORDER BY name";
 
@@ -73,8 +95,15 @@ function findByName($name) {
 	}
 }
 
+/**
+ * Get countries by region using partial matching with optional sorting
+ *
+ * @param string $region Region name or partial region name
+ * @return void JSON response
+ */
 function getCountriesByRegion($region) {
-    if (isset($_GET['sort'])) {
+	// Check if parameter is provided, default to name
+	if (isset($_GET['sort'])) {
 		$col = $_GET['sort'];
 	} else {
 		$col = "name";
@@ -104,6 +133,12 @@ function getCountriesByRegion($region) {
 	}
 }
 
+/**
+ * Search countries by name using partial matching
+ *
+ * @param string $capital Capital city name or partial capital city name
+ * @return void JSON response
+ */
 function getCountriesByCapital($capital) {
 	$query = "SELECT * FROM countries WHERE UPPER(capital) LIKE " . '"%' . $capital . '%"' . " ORDER BY capital";
 
@@ -129,13 +164,20 @@ function getCountriesByCapital($capital) {
 	}
 }
 
+/**
+ * Get countries by language using partial matching with optional sorting
+ *
+ * @param string $language Language name or partial language name
+ * @return void JSON response
+ */
 function getCountriesByLanguage($language) {
-    if (isset($_GET['sort'])) {
+	// Check if parameter is provided, default to name
+	if (isset($_GET['sort'])) {
 		$col = $_GET['sort'];
 	} else {
 		$col = "name";
 	}
-    
+
 	$query = "SELECT * FROM countries WHERE UPPER(language) LIKE " . '"%' . $language . '%"' . " ORDER BY $col";
 
 	try {
@@ -160,75 +202,90 @@ function getCountriesByLanguage($language) {
 	}
 }
 
+/**
+ * Add a new country to the database
+ *
+ * @return void JSON response
+ */
 function addCountry() {
-    global $app;
-    $request = $app->request();
-    $country = json_decode($request->getBody());
+	global $app;
+	$request = $app->request();
+	$country = json_decode($request->getBody());
 
-    if (!$country) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Invalid JSON format."
-        ]);
-        return;
-    }
+	// Validate JSON input
+	if (!$country) {
+		echo json_encode([
+			"success" => false,
+			"message" => "Invalid JSON format."
+		]);
+		return;
+	}
 
-    $requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
-    foreach ($requiredFields as $field) {
-        if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Missing or empty field: '$field'. All fields are required."
-            ]);
-            return;
-        }
-    }
+	// Check all required fields are present and not empty
+	$requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
+	foreach ($requiredFields as $field) {
+		if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null) {
+			echo json_encode([
+				"success" => false,
+				"message" => "Missing or empty field: '$field'. All fields are required."
+			]);
+			return;
+		}
+	}
 
-    $numericFields = ['population', 'area', 'gdp'];
-    foreach ($numericFields as $field) {
-        if (!is_numeric($country->$field)) {
-            echo json_encode([
-                "success" => false,
-                "message" => ucfirst($field) . " must be a number."
-            ]);
-            return;
-        }
-    }
+	// Validate numeric fields
+	$numericFields = ['population', 'area', 'gdp'];
+	foreach ($numericFields as $field) {
+		if (!is_numeric($country->$field)) {
+			echo json_encode([
+				"success" => false,
+				"message" => ucfirst($field) . " must be a number."
+			]);
+			return;
+		}
+	}
 
-    $name = $country->name;
-    $capital = $country->capital;
-    $region = $country->region;
-    $population = $country->population;
-    $area = $country->area;
-    $language = $country->language;
-    $currency = $country->currency;
-    $gdp = $country->gdp;
-    $description = $country->description;
-    $flag_url = $country->flag_url;
-    $query = "INSERT INTO countries 
-                (name, capital, region, population, area, language, currency, gdp, description, flag_url) 
-            VALUES 
-                ('$name', '$capital', '$region', '$population', '$area', '$language', '$currency', '$gdp', '$description', '$flag_url')";
-    try {
-        global $db;
-        $db->exec($query);
-        $country->id = $db->lastInsertId();
-        echo json_encode([
+	// Extract country data
+	$name = $country->name;
+	$capital = $country->capital;
+	$region = $country->region;
+	$population = $country->population;
+	$area = $country->area;
+	$language = $country->language;
+	$currency = $country->currency;
+	$gdp = $country->gdp;
+	$description = $country->description;
+	$flag_url = $country->flag_url;
+	$query = "INSERT INTO countries 
+				(name, capital, region, population, area, language, currency, gdp, description, flag_url) 
+			VALUES 
+				('$name', '$capital', '$region', '$population', '$area', '$language', '$currency', '$gdp', '$description', '$flag_url')";
+	try {
+		global $db;
+		$db->exec($query);
+		$country->id = $db->lastInsertId();
+		echo json_encode([
 			"success" => true,
 			"message" => "Country added successfully.",
 			"country" => $country
 		]);
-    } catch (PDOException $e) {
-        echo json_encode(["error" => ["text" => $e->getMessage()]]);
-    }
+	} catch (PDOException $e) {
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
 }
 
+/**
+ * Delete a country by ID
+ *
+ * @param int $id Country ID to delete
+ * @return void JSON response
+ */
 function deleteCountry($id) {
-    $query = "DELETE FROM countries WHERE id=$id";
-    try {
-        global $db;
-        $rowsAffected = $db->exec($query);
-        if ($rowsAffected > 0) {
+	$query = "DELETE FROM countries WHERE id=$id";
+	try {
+		global $db;
+		$rowsAffected = $db->exec($query);
+		if ($rowsAffected > 0) {
 			echo json_encode([
 				"success" => true,
 				"message" => "Country deleted successfully."
@@ -239,64 +296,74 @@ function deleteCountry($id) {
 				"message" => "No country found with ID $id."
 			]);
 		}
-    } catch (PDOException $e) {
-        echo json_encode(["error" => ["text" => $e->getMessage()]]);
-    }
+	} catch (PDOException $e) {
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
 }
 
+/**
+ * Update an existing country
+ *
+ * @param int $id Country ID to update
+ * @return void JSON response
+ */
 function updateCountry($id) {
-    global $app;
-    $request = $app->request();
-    $country = json_decode($request->getBody());
+	global $app;
+	$request = $app->request();
+	$country = json_decode($request->getBody());
 
-    if (!$country) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Invalid JSON format."
-        ]);
-        return;
-    }
-    
-    $requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
-    foreach ($requiredFields as $field) {
-        if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Missing or empty field: '$field'. All fields are required."
-            ]);
-            return;
-        }
-    }
+	// Validate JSON input
+	if (!$country) {
+		echo json_encode([
+			"success" => false,
+			"message" => "Invalid JSON format."
+		]);
+		return;
+	}
 
-    $numericFields = ['population', 'area', 'gdp'];
-    foreach ($numericFields as $field) {
-        if (!is_numeric($country->$field)) {
-            echo json_encode([
-                "success" => false,
-                "message" => ucfirst($field) . " must be a number."
-            ]);
-            return;
-        }
-    }
+	// Check all required fields are present and not empty
+	$requiredFields = ['name', 'capital', 'region', 'population', 'area', 'language', 'currency', 'gdp', 'description', 'flag_url'];
+	foreach ($requiredFields as $field) {
+		if (!property_exists($country, $field) || $country->$field === '' || $country->$field === null) {
+			echo json_encode([
+				"success" => false,
+				"message" => "Missing or empty field: '$field'. All fields are required."
+			]);
+			return;
+		}
+	}
 
-    $name = $country->name;
-    $capital = $country->capital;
-    $region = $country->region;
-    $population = $country->population;
-    $area = $country->area;
-    $language = $country->language;
-    $currency = $country->currency;
-    $gdp = $country->gdp;
-    $description = $country->description;
-    $flag_url = $country->flag_url;
+	// Validate numeric fields
+	$numericFields = ['population', 'area', 'gdp'];
+	foreach ($numericFields as $field) {
+		if (!is_numeric($country->$field)) {
+			echo json_encode([
+				"success" => false,
+				"message" => ucfirst($field) . " must be a number."
+			]);
+			return;
+		}
+	}
 
-    $query = "UPDATE countries SET name='$name', capital='$capital', region='$region', 
-            population ='$population', area='$area', language='$language', currency='$currency', 
-            gdp='$gdp', description='$description', flag_url='$flag_url' WHERE id='$id'";
-    
-    try {
-        global $db;
-        $rowsAffected = $db->exec($query);
+	// Extract country data
+	$name = $country->name;
+	$capital = $country->capital;
+	$region = $country->region;
+	$population = $country->population;
+	$area = $country->area;
+	$language = $country->language;
+	$currency = $country->currency;
+	$gdp = $country->gdp;
+	$description = $country->description;
+	$flag_url = $country->flag_url;
+
+	$query = "UPDATE countries SET name='$name', capital='$capital', region='$region', 
+			population ='$population', area='$area', language='$language', currency='$currency', 
+			gdp='$gdp', description='$description', flag_url='$flag_url' WHERE id='$id'";
+
+	try {
+		global $db;
+		$rowsAffected = $db->exec($query);
 		if ($rowsAffected > 0) {
 			echo json_encode([
 				"success" => true,
@@ -309,15 +376,24 @@ function updateCountry($id) {
 				"message" => "No country found with ID $id or no changes made."
 			]);
 		}
-    } catch (PDOException $e) {
-        echo '{"error":{"text":' . $e->getMessage() . '}}';
-    }
+	} catch (PDOException $e) {
+		echo '{"error":{"text":' . $e->getMessage() . '}}';
+	}
 }
 
 
+/**
+ * USER RELATED FUNCTIONS
+ */
 
 
+/**
+ * Retrieve all users with optional sorting
+ *
+ * @return void JSON response
+ */
 function getUsers() {
+	// Check if parameter is provided, default to name
 	if (isset($_GET['sort'])) {
 		$col = $_GET['sort'];
 	} else {
@@ -341,6 +417,12 @@ function getUsers() {
 	}
 }
 
+/**
+ * Retrieve a specific user by ID
+ *
+ * @param int $id User ID
+ * @return void JSON response
+ */
 function getUser($id) {
 	$query = "SELECT * FROM users WHERE id = '$id'";
 
@@ -366,6 +448,12 @@ function getUser($id) {
 	}
 }
 
+/**
+ * Search users by username using partial matching
+ *
+ * @param string $username Username or partial username
+ * @return void JSON response
+ */
 function searchByUsername($username) {
 	$query = "SELECT * FROM users WHERE UPPER(username) LIKE " . '"%' . $username . '%"' . " ORDER BY username";
 
@@ -391,113 +479,136 @@ function searchByUsername($username) {
 	}
 }
 
+/**
+ * Add a new user to the database
+ *
+ * @return void JSON response
+ */
 function addUser() {
-    global $app;
-    $request = $app->request();
-    $user = json_decode($request->getBody());
+	global $app;
+	$request = $app->request();
+	$user = json_decode($request->getBody());
 
-    if (!$user) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Invalid JSON format."
-        ]);
-        return;
-    }
+	// Validate JSON input
+	if (!$user) {
+		echo json_encode([
+			"success" => false,
+			"message" => "Invalid JSON format."
+		]);
+		return;
+	}
 
-    $requiredFields = ['name', 'username', 'password', 'image'];
-    foreach ($requiredFields as $field) {
-        if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Missing or empty field: '$field'. All fields are required."
-            ]);
-            return;
-        }
-    }
+	// Check all required fields are present and not empty
+	$requiredFields = ['name', 'username', 'password', 'image'];
+	foreach ($requiredFields as $field) {
+		if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null) {
+			echo json_encode([
+				"success" => false,
+				"message" => "Missing or empty field: '$field'. All fields are required."
+			]);
+			return;
+		}
+	}
 
+	// Extract user data
 	$name = $user->name;
-    $username = $user->username;
-    $password = $user->password;
-    $image = $user->image;
+	$username = $user->username;
+	$password = $user->password;
+	$image = $user->image;
 
-    $query = "INSERT INTO users 
-                (name, username, password, image) 
-            VALUES 
-                ('$name', '$username', '$password', '$image')";
-    try {
-        global $db;
-        $db->exec($query);
-        $user->id = $db->lastInsertId();
-        echo json_encode([
+	$query = "INSERT INTO users 
+				(name, username, password, image) 
+			VALUES 
+				('$name', '$username', '$password', '$image')";
+	try {
+		global $db;
+		$db->exec($query);
+		$user->id = $db->lastInsertId();
+		echo json_encode([
 			"success" => true,
 			"message" => "User added successfully.",
 			"user" => $user
 		]);
-    } catch (PDOException $e) {
-        echo json_encode(["error" => ["text" => $e->getMessage()]]);
-    }
+	} catch (PDOException $e) {
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
 }
 
+/**
+ * Delete a user by ID
+ *
+ * @param int $id User ID to delete
+ * @return void JSON response
+ */
 function deleteUser($id) {
-    $query = "DELETE FROM users WHERE id=$id";
-    try
-    {
-        global $db;
-        $rowsAffected = $db->exec($query);
-        if ($rowsAffected > 0)
-        {
+	$query = "DELETE FROM users WHERE id=$id";
+	try
+	{
+		global $db;
+		$rowsAffected = $db->exec($query);
+		if ($rowsAffected > 0)
+		{
 			echo json_encode([
 				"success" => true,
 				"message" => "User deleted successfully."
 			]);
 		}
-        else
-        {
+		else
+		{
 			echo json_encode([
 				"success" => false,
 				"message" => "No user found with ID $id."
 			]);
 		}
-    } catch (PDOException $e) {
-        echo json_encode(["error" => ["text" => $e->getMessage()]]);
-    }
+	} catch (PDOException $e) {
+		echo json_encode(["error" => ["text" => $e->getMessage()]]);
+	}
 }
 
+/**
+ * Update an existing user
+ *
+ * @param int $id User ID to update
+ * @return void JSON response
+ */
 function updateUser($id) {
-    global $app;
-    $request = $app->request();
-    $user = json_decode($request->getBody());
+	global $app;
+	$request = $app->request();
+	$user = json_decode($request->getBody());
 
-    if (!$user) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Invalid JSON format."
-        ]);
-        return;
-    }
-    
-    $requiredFields = ['name', 'username', 'password', 'image'];
-    foreach ($requiredFields as $field) {
-        if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null) {
-            echo json_encode([
-                "success" => false,
-                "message" => "Missing or empty field: '$field'. All fields are required."
-            ]);
-            return;
-        }
-    }
+	// Validate JSON input
+	if (!$user) {
+		echo json_encode([
+			"success" => false,
+			"message" => "Invalid JSON format."
+		]);
+		return;
+	}
 
-    $name = $user->name;
-    $username = $user->username;
-    $password = $user->password;
-    $image = $user->image;
+	// Check all required fields are present and not empty
+	$requiredFields = ['name', 'username', 'password', 'image'];
+	foreach ($requiredFields as $field) {
+		if (!property_exists($user, $field) || $user->$field === '' || $user->$field === null) {
+			echo json_encode([
+				"success" => false,
+				"message" => "Missing or empty field: '$field'. All fields are required."
+			]);
+			return;
+		}
+	}
 
-    $query = "UPDATE users SET name='$name', username='$username', password='$password', 
-            image ='$image' WHERE id='$id'";
-    
-    try {
-        global $db;
-        $rowsAffected = $db->exec($query);
+	// Extract user data
+	$name = $user->name;
+	$username = $user->username;
+	$password = $user->password;
+	$image = $user->image;
+
+	$query = "UPDATE users SET name='$name', username='$username', password='$password', 
+			image ='$image' WHERE id='$id'";
+
+	try {
+		global $db;
+		$rowsAffected = $db->exec($query);
 		if ($rowsAffected > 0) {
 			echo json_encode([
 				"success" => true,
@@ -510,8 +621,8 @@ function updateUser($id) {
 				"message" => "No user found with ID $id or no changes made."
 			]);
 		}
-    } catch (PDOException $e) {
-        echo '{"error":{"text":' . $e->getMessage() . '}}';
-    }
+	} catch (PDOException $e) {
+		echo '{"error":{"text":' . $e->getMessage() . '}}';
+	}
 }
 ?>

@@ -1,11 +1,15 @@
 <?php
+//Slim Framework setup and routing configuration
 require 'Slim/Slim.php';
 require 'country_db.php';
 require 'database.php';
 use Slim\Slim;
 \Slim\Slim::registerAutoloader();
 
+// Initialise Slim application
 $app = new Slim();
+
+// Country routes
 $app->get('/countries', 'getCountries');
 $app->get('/countries/:id', 'getCountry');
 $app->get('/countries/search/:query', 'findByName');
@@ -16,6 +20,7 @@ $app->post('/countries', 'addCountry');
 $app->delete('/countries/:id', 'deleteCountry');
 $app->put('/countries/:id', 'updateCountry');
 
+// User routes
 $app->get('/users', 'getUsers');
 $app->get('/users/:id', 'getUser');
 $app->get('/users/search/:query', 'searchByUsername');
@@ -23,5 +28,6 @@ $app->post('/users', 'addUser');
 $app->delete('/users/:id', 'deleteUser');
 $app->put('/users/:id', 'updateUser');
 
+// Start the application
 $app->run();
 ?>
