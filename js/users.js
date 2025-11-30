@@ -251,11 +251,6 @@ var updateUser = function() {
         }
     }
 
-    if (!isValidUrl(updatedUserData.image)) {
-        alert("Please enter a valid URL for the image");
-        return false;
-    }
-
     $.ajax({
         type: 'PUT',
         url: usersRootURL + '/' + userId,
@@ -331,15 +326,6 @@ var deleteUser = function() {
         }
     });
 };
-
-function isValidUrl(string) {
-    try {
-        new URL(string);
-        return true;
-    } catch (_) {
-        return false;
-    }
-}
 
 $(document).ready(function() {
     findAllUsers();
