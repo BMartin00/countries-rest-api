@@ -64,8 +64,8 @@ INSERT INTO countries (name, capital, region, population, area, language, curren
 
 -- Insert sample users
 INSERT INTO users (name, username, password, image) VALUES
-('John Doe', 'johndoe', 'password123', 'https://example.com/images/john.png'),
-('Jane Smith', 'janesmith', 'securepass', 'https://example.com/images/jane.png');
+('John Doe', 'johndoe', 'password123', 'male_user.jpg'),
+('Jane Smith', 'janesmith', 'securepass', 'female_user.jpg');
 
 SELECT * FROM countries;
 SELECT * FROM users;

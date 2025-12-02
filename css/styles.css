@@ -1,0 +1,46 @@
+/* Main page spacing */
+body {
+    padding: 20px;
+}
+
+/* Tab content area */
+.tab-content {
+    padding: 20px 15px;
+}
+
+/* Search and button rows */
+.form-inline {
+    margin-bottom: 20px;
+}
+
+/* Input field spacing */
+.form-control {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+/* Button spacing */
+.btn {
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+/* Table spacing */
+table {
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px 12px;
+}
+
+/* Modal form spacing */
+.modal-body .form-group {
+    margin-bottom: 15px;
+}
+
+/* Modal button alignment */
+.modal-footer .btn {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
